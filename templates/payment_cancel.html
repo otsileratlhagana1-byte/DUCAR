@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}DUCAR FEST 3.0{% endblock %}</title>
+<link rel="icon" href="{{ url_for('static', filename='images/brand-mark.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+{% block head %}{% endblock %}
+</head><body>
+<div id="loader"><img src="{{ url_for('static', filename='images/brand-mark.png') }}"><div>DUCAR FEST 3.0</div><span>Loading...</span></div>
+<nav class="nav"><a class="brand" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/brand-mark.png') }}"> DUCAR FEST 3.0</a>
+<div class="navlinks">
+<a href="{{ url_for('home') }}">Tickets</a>
+{% if current_user %}
+<a href="{{ url_for('my_tickets') }}">My Tickets</a>
+{% if current_user.role == 'admin' %}<a href="{{ url_for('admin_dashboard') }}">Admin</a>{% endif %}
+{% if current_user.role in ['creator','admin'] %}<a href="{{ url_for('creator_dashboard') }}">Creator</a>{% endif %}
+<a href="{{ url_for('logout') }}">Logout</a>
+{% else %}<a href="{{ url_for('login') }}">Login</a><a class="btn small" href="{{ url_for('register') }}">Create account</a>{% endif %}
+</div></nav>
+<main class="wrap">
+{% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="flash {{category}}">{{message}}</div>{% endfor %}{% endwith %}
+{% block content %}<div class="panel center"><h1>Payment cancelled</h1><p>You can return to the ticket page and try again.</p><a class="btn" href="{{ url_for('home') }}">Back to tickets</a></div>{% endblock %}
+</main>
+<footer>Official DUCAR FEST 3.0 ticketing • Tickets issued by the organiser only</footer>
+<script>window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loader')?.classList.add('hide'),350));</script>
+{% block scripts %}{% endblock %}
+</body></html>

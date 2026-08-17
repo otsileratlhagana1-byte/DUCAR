@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block title %}Ticket Scanner{% endblock %}{% block head %}<script src="https://unpkg.com/html5-qrcode" defer></script>{% endblock %}{% block content %}
+<div class="sectionhead"><div><span class="eyebrow">ENTRY CONTROL</span><h1>Scan tickets</h1><p>Use the phone camera. Each valid ticket can be checked in only once.</p></div></div>
+<div class="scanner-grid"><div class="panel"><div id="reader"></div><button id="start" class="btn">Start camera</button></div><div id="result" class="panel result"><h2>Ready</h2><p>Scan the ticket barcode.</p></div></div>
+{% endblock %}{% block scripts %}<script>
+let scanner;
+document.getElementById('start').onclick=async()=>{
+ const r=document.getElementById('reader');
+ scanner=new Html5Qrcode("reader");
+ try{
+  await scanner.start({facingMode:"environment"},{fps:10,qrbox:{width:280,height:160},formatsToSupport:[Html5QrcodeSupportedFormats.CODE_128,Html5QrcodeSupportedFormats.QR_CODE]},async(text)=>{
+    await scanner.stop().catch(()=>{});
+    const res=await fetch("/api/scan/"+encodeURIComponent(text.trim()));
+    const data=await res.json();
+    document.getElementById('result').innerHTML="<h2>"+(data.ok?"✓ VALID TICKET":"✕ "+data.message)+"</h2><p>Code: "+(data.ticket||text)+"</p><p>"+(data.buyer||"")+"</p>";
+  });
+ }catch(e){document.getElementById('result').innerHTML="<h2>Camera error</h2><p>"+e+"</p><p>Allow camera permission and use HTTPS when deployed.</p>";}
+};
+</script>{% endblock %}

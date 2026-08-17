@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}My Tickets{% endblock %}{% block content %}
+<div class="sectionhead"><div><span class="eyebrow">MY ACCOUNT</span><h1>My tickets</h1></div><a class="btn small" href="{{ url_for('home') }}">Buy more</a></div>
+{% for order in orders %}<section class="panel order-card"><div class="row"><div><b>{{ order.reference }}</b><span>{{ order.tier.name }} · {{ order.quantity }} ticket(s)</span></div><div><span class="pill">{{ order.payment_status }}</span><span class="pill">{{ order.admin_status }}</span></div></div>
+{% if order.tickets %}<div class="phone-tickets">{% for t in order.tickets %}<div class="phone-ticket"><img src="{{ url_for('ticket_png', code=t.code) }}"><a class="btn small" href="{{ url_for('ticket_png', code=t.code) }}">Save ticket image</a>{% if t.checked_in %}<span class="used">ALREADY USED</span>{% endif %}</div>{% endfor %}</div>{% else %}<p>Ticket image will appear here after admin confirmation.</p>{% endif %}</section>{% else %}<div class="panel center"><h2>No orders yet</h2><a class="btn" href="{{ url_for('home') }}">See tickets</a></div>{% endfor %}
+{% endblock %}
